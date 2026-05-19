@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+Backend/node_modules/
+
+# Build outputs
+build/
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local

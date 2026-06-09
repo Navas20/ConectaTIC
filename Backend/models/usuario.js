@@ -1,76 +1,61 @@
 import { getDb } from '../config/db.js';
 
 export const UsuarioModel = {
-  // ============================================================
-  // Buscar usuario por correo
-  // ============================================================
   async findByEmail(correo) {
     try {
       const db = getDb();
-      const result = await db.query(
-        'SELECT id, nombre, correo, password, progreso FROM usuarios WHERE correo = $1',
+      const [rows] = await db.query(
+        'SELECT id, nombre, correo, password, progreso FROM usuarios WHERE correo = ?',
         [correo]
       );
-      return result.rows[0] || null;
+      return rows[0] || null;
     } catch (error) {
       console.error('❌ Error en findByEmail:', error.message);
       throw error;
     }
   },
 
-  // ============================================================
-  // Buscar usuario por ID
-  // ============================================================
   async findById(id) {
     try {
       const db = getDb();
-      const result = await db.query(
-        'SELECT id, nombre, correo, progreso FROM usuarios WHERE id = $1',
+      const [rows] = await db.query(
+        'SELECT id, nombre, correo, progreso FROM usuarios WHERE id = ?',
         [id]
       );
-      return result.rows[0] || null;
+      return rows[0] || null;
     } catch (error) {
       console.error('❌ Error en findById:', error.message);
       throw error;
     }
   },
 
-  // ============================================================
-  // Obtener todos los usuarios
-  // ============================================================
   async getAll() {
     try {
       const db = getDb();
-      const result = await db.query(
+      const [rows] = await db.query(
         'SELECT id, nombre, correo, progreso FROM usuarios ORDER BY id DESC'
       );
-      return result.rows || [];
+      return rows;
     } catch (error) {
       console.error('❌ Error en getAll:', error.message);
       throw error;
     }
   },
 
-  // ============================================================
-  // Crear nuevo usuario
-  // ============================================================
   async create({ nombre, correo, password }) {
     try {
       const db = getDb();
-      const result = await db.query(
-        'INSERT INTO usuarios (nombre, correo, password, progreso) VALUES ($1, $2, $3, 0) RETURNING id',
+      const [result] = await db.query(
+        'INSERT INTO usuarios (nombre, correo, password, progreso) VALUES (?, ?, ?, 0)',
         [nombre, correo, password]
       );
-      return result.rows[0].id;
+      return result.insertId;
     } catch (error) {
       console.error('❌ Error en create:', error.message);
       throw error;
     }
   },
 
-  // ============================================================
-  // Actualizar usuario (por ID)
-  // ============================================================
   async updateById(id, updates) {
     try {
       const allowedFields = ['nombre', 'correo'];
@@ -88,11 +73,11 @@ export const UsuarioModel = {
 
       const db = getDb();
       const keys = Object.keys(updateFields);
-      const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
+      const setClause = keys.map((key) => `${key} = ?`).join(', ');
       const values = Object.values(updateFields);
 
       await db.query(
-        `UPDATE usuarios SET ${setClause} WHERE id = $${keys.length + 1}`,
+        `UPDATE usuarios SET ${setClause} WHERE id = ?`,
         [...values, id]
       );
 
@@ -103,9 +88,6 @@ export const UsuarioModel = {
     }
   },
 
-  // ============================================================
-  // Actualizar progreso del usuario
-  // ============================================================
   async updateProgress(id, incremento) {
     try {
       const user = await this.findById(id);
@@ -115,7 +97,7 @@ export const UsuarioModel = {
 
       const db = getDb();
       await db.query(
-        'UPDATE usuarios SET progreso = $1 WHERE id = $2',
+        'UPDATE usuarios SET progreso = ? WHERE id = ?',
         [nuevoProgreso, id]
       );
 
@@ -126,17 +108,14 @@ export const UsuarioModel = {
     }
   },
 
-  // ============================================================
-  // Eliminar usuario por ID
-  // ============================================================
   async deleteById(id) {
     try {
       const db = getDb();
-      const result = await db.query(
-        'DELETE FROM usuarios WHERE id = $1',
+      const [result] = await db.query(
+        'DELETE FROM usuarios WHERE id = ?',
         [id]
       );
-      return result.rowCount > 0;
+      return result.affectedRows > 0;
     } catch (error) {
       console.error('❌ Error en deleteById:', error.message);
       throw error;

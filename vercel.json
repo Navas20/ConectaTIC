@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "rootDirectory": "Backend",
-  "framework": "express",
+  "buildCommand": "cd Backend && npm install",
+  "installCommand": "npm install",
   "functions": {
-    "server.js": {
+    "Backend/server.js": {
       "memory": 1024,
       "maxDuration": 60
     }
@@ -14,7 +14,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/server.js"
+      "destination": "/Backend/server.js"
     }
   ]
 }

@@ -1,0 +1,11 @@
+frontend/**
+!.vercelignore
+node_modules
+.git
+.gitignore
+*.log
+.env
+.env.local
+.env.*.local
+tools
+scripts

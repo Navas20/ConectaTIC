@@ -166,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       labelText: 'Contraseña',
                       prefixIcon: const Icon(Icons.lock_outlined),
                       prefixIconColor: const Color(0xFF58CC02),
-                      helperText: 'Mínimo 6 caracteres',
+                      helperText: 'Mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial',
                       helperStyle: TextStyle(
                         color: const Color(0xFF3C3C3C).withOpacity(0.5),
                       ),
@@ -175,8 +175,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'La contraseña es requerida';
                       }
-                      if (value.length < 6) {
-                        return 'Mínimo 6 caracteres';
+                      if (value.length < 8) {
+                        return 'Mínimo 8 caracteres';
+                      }
+                      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                        return 'Debe contener una mayúscula';
+                      }
+                      if (!RegExp(r'[a-z]').hasMatch(value)) {
+                        return 'Debe contener una minúscula';
+                      }
+                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                        return 'Debe contener un número';
+                      }
+                      if (!RegExp(r'[@\$!%*?&]').hasMatch(value)) {
+                        return 'Debe contener un carácter especial (@\$!%*?&)';
                       }
                       return null;
                     },

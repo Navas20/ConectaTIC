@@ -38,12 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.read<AuthProvider>();
 
     try {
-      final result = await authProvider
-          .login(
-            correo: _correoController.text.trim(),
-            password: _contrasenaController.text,
-          )
-          .timeout(const Duration(seconds: 15));
+      final result = await authProvider.login(
+        correo: _correoController.text.trim(),
+        password: _contrasenaController.text,
+      );
 
       // Si hay error, mostrar pantalla completa de error
       if (result['success'] != true) {
@@ -222,8 +220,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIconColor: const Color(0xFF58CC02),
                     ),
                     validator: (value) {
-                      if (value == null || value.length < 6) {
-                        return 'Mínimo 6 caracteres';
+                      if (value == null || value.isEmpty) {
+                        return 'La contraseña es requerida';
+                      }
+                      if (value.length < 8) {
+                        return 'Mínimo 8 caracteres';
                       }
                       return null;
                     },

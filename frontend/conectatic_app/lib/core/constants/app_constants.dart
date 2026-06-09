@@ -2,9 +2,9 @@
 class AppConstants {
   AppConstants._();
 
-  // URL base para el backend (producción con Railway).
+  // URL base para el backend (producción con Vercel).
   static String get apiBaseUrl {
-    return 'https://conectatic-production.up.railway.app/api';
+    return 'https://conecta-tic.vercel.app/api';
   }
 
   // Claves para SharedPreferences.

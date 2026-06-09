@@ -16,6 +16,7 @@ import dotenv from 'dotenv';
 import { initDb } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import usuariosRoutes from './routes/usuariosRoutes.js';
+import moduloRoutes from './routes/moduloRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 // Cargar variables de entorno
@@ -156,6 +157,9 @@ app.use('/api/auth', authLimiter, authRoutes);
 
 // 👥 Usuarios
 app.use('/api/usuarios', generalLimiter, usuariosRoutes);
+
+// 📚 Módulos y contenido educativo
+app.use('/api/modulos', generalLimiter, moduloRoutes);
 
 // ============================================================
 // MANEJO DE RUTAS NO ENCONTRADAS

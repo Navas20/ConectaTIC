@@ -67,7 +67,6 @@ export const errorHandler = (err, req, res, next) => {
     message,
     statusCode,
     timestamp: new Date().toISOString(),
-    error: err.message,
     ...(NODE_ENV === 'development' && { errorId }), // Mostrar ID en desarrollo para debugging
   };
 

@@ -1,4 +1,6 @@
 let app;
+let dbReady = false;
+let dbError = null;
 
 try {
   const serverModule = await import('../Backend/server.js');
@@ -20,9 +22,23 @@ try {
 
 try {
   const { initDb } = await import('../Backend/config/db.js');
-  initDb().catch(err => console.error('❌ DB init error:', err.message));
+  await initDb();
+  dbReady = true;
+  console.log('✅ Database initialized');
 } catch (err) {
-  console.error('❌ Failed to load config/db.js:', err.message);
+  dbError = err.message;
+  console.error('❌ DB init error:', err.message);
 }
+
+app.use((req, res, next) => {
+  if (!dbReady) {
+    return res.status(503).json({
+      success: false,
+      message: 'Base de datos no disponible',
+      error: dbError || 'Inicializando...',
+    });
+  }
+  next();
+});
 
 export default app;

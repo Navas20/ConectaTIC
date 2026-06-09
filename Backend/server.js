@@ -222,7 +222,10 @@ async function startServer() {
   }
 }
 
-// Iniciar servidor
-startServer();
+// En Vercel serverless, la plataforma usa el export default (no llamar listen)
+const isVercel = process.env.VERCEL === '1';
+if (!isVercel) {
+  startServer();
+}
 
 export default app;

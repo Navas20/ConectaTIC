@@ -12,7 +12,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "envPrefix": "",
   "rewrites": [
     {
       "source": "/api/(.*)",

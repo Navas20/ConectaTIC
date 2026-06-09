@@ -1,20 +1,24 @@
-import { sql } from '@vercel/postgres';
+import pkg from 'pg';
 import dotenv from 'dotenv';
+
+const { Pool } = pkg;
 
 // Cargar .env solo en desarrollo
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
 export async function initDb() {
   try {
-    // Verificar conexión a Vercel Postgres
-    const result = await sql`SELECT 1`;
-    console.log('✅ Conexión a Vercel Postgres establecida correctamente');
-    console.log('   📝 Nota: Base de datos persistente y GRATIS con Vercel');
+    await pool.query('SELECT 1');
+    console.log('✅ Conexión a PostgreSQL establecida correctamente');
 
-    // Crear tabla si no existe
-    await sql`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id SERIAL PRIMARY KEY,
         nombre VARCHAR(100) NOT NULL,
@@ -23,19 +27,19 @@ export async function initDb() {
         progreso INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-    `;
+    `);
 
     console.log('✅ Tabla usuarios verificada/creada');
-    
-    return sql;
+
+    return pool;
   } catch (error) {
-    console.error('❌ Error conectando a Vercel Postgres:', error.message);
+    console.error('❌ Error conectando a PostgreSQL:', error.message);
     throw error;
   }
 }
 
 export function getDb() {
-  return sql;
+  return pool;
 }
 
 export default { initDb, getDb };

@@ -7,9 +7,10 @@ export const UsuarioModel = {
   async findByEmail(correo) {
     try {
       const db = getDb();
-      const result = await db`
-        SELECT id, nombre, correo, password, progreso FROM usuarios WHERE correo = ${correo}
-      `;
+      const result = await db.query(
+        'SELECT id, nombre, correo, password, progreso FROM usuarios WHERE correo = $1',
+        [correo]
+      );
       return result.rows[0] || null;
     } catch (error) {
       console.error('❌ Error en findByEmail:', error.message);
@@ -23,9 +24,10 @@ export const UsuarioModel = {
   async findById(id) {
     try {
       const db = getDb();
-      const result = await db`
-        SELECT id, nombre, correo, progreso FROM usuarios WHERE id = ${id}
-      `;
+      const result = await db.query(
+        'SELECT id, nombre, correo, progreso FROM usuarios WHERE id = $1',
+        [id]
+      );
       return result.rows[0] || null;
     } catch (error) {
       console.error('❌ Error en findById:', error.message);
@@ -39,9 +41,9 @@ export const UsuarioModel = {
   async getAll() {
     try {
       const db = getDb();
-      const result = await db`
-        SELECT id, nombre, correo, progreso FROM usuarios ORDER BY id DESC
-      `;
+      const result = await db.query(
+        'SELECT id, nombre, correo, progreso FROM usuarios ORDER BY id DESC'
+      );
       return result.rows || [];
     } catch (error) {
       console.error('❌ Error en getAll:', error.message);
@@ -55,11 +57,10 @@ export const UsuarioModel = {
   async create({ nombre, correo, password }) {
     try {
       const db = getDb();
-      const result = await db`
-        INSERT INTO usuarios (nombre, correo, password, progreso)
-        VALUES (${nombre}, ${correo}, ${password}, 0)
-        RETURNING id
-      `;
+      const result = await db.query(
+        'INSERT INTO usuarios (nombre, correo, password, progreso) VALUES ($1, $2, $3, 0) RETURNING id',
+        [nombre, correo, password]
+      );
       return result.rows[0].id;
     } catch (error) {
       console.error('❌ Error en create:', error.message);
@@ -72,7 +73,6 @@ export const UsuarioModel = {
   // ============================================================
   async updateById(id, updates) {
     try {
-      // 🔒 WHITELIST de campos permitidos
       const allowedFields = ['nombre', 'correo'];
       const updateFields = {};
 
@@ -87,14 +87,14 @@ export const UsuarioModel = {
       }
 
       const db = getDb();
-      const setClause = Object.keys(updateFields)
-        .map(key => `${key} = $${Object.keys(updateFields).indexOf(key) + 1}`)
-        .join(', ');
+      const keys = Object.keys(updateFields);
+      const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
       const values = Object.values(updateFields);
 
-      await db(`
-        UPDATE usuarios SET ${setClause} WHERE id = $${values.length + 1}
-      `, [...values, id]);
+      await db.query(
+        `UPDATE usuarios SET ${setClause} WHERE id = $${keys.length + 1}`,
+        [...values, id]
+      );
 
       return this.findById(id);
     } catch (error) {
@@ -114,9 +114,10 @@ export const UsuarioModel = {
       const nuevoProgreso = Math.min(100, Math.max(0, user.progreso + incremento));
 
       const db = getDb();
-      await db`
-        UPDATE usuarios SET progreso = ${nuevoProgreso} WHERE id = ${id}
-      `;
+      await db.query(
+        'UPDATE usuarios SET progreso = $1 WHERE id = $2',
+        [nuevoProgreso, id]
+      );
 
       return nuevoProgreso;
     } catch (error) {
@@ -131,9 +132,10 @@ export const UsuarioModel = {
   async deleteById(id) {
     try {
       const db = getDb();
-      const result = await db`
-        DELETE FROM usuarios WHERE id = ${id}
-      `;
+      const result = await db.query(
+        'DELETE FROM usuarios WHERE id = $1',
+        [id]
+      );
       return result.rowCount > 0;
     } catch (error) {
       console.error('❌ Error en deleteById:', error.message);

@@ -1,106 +1,226 @@
 # 🚀 GUÍA DE DEPLOYMENT - ConectaTIC v2.0.0
 
 **Última actualización:** 8 de Junio 2026  
-**Stack:** Express.js + MySQL (PlanetScale) + Vercel + Flutter Web
+**Stack:** Express.js + PostgreSQL (Vercel Postgres) + Vercel + Flutter Web  
+**Costo:** 🟢 **100% GRATIS**
 
 ---
 
 ## 📋 TABLA DE CONTENIDOS
 
-1. [Requisitos Previos](#requisitos-previos)
-2. [FASE 1: PlanetScale MySQL](#fase-1-planetscale-mysql)
+1. [Ventajas de Vercel Postgres](#ventajas)
+2. [FASE 1: Vercel Postgres Setup](#fase-1-vercel-postgres)
 3. [FASE 2: Vercel Backend](#fase-2-vercel-backend)
 4. [FASE 3: Flutter Web](#fase-3-flutter-web)
 5. [Verificación Post-Deployment](#verificación-post-deployment)
-6. [Troubleshooting](#troubleshooting)
+
+---
+
+## ✨ Ventajas de Vercel Postgres {#ventajas}
+
+✅ **Completamente Gratis** (incluido en plan Free de Vercel)  
+✅ **Cero Configuración** - Todo automático  
+✅ **Base de Datos Permanente** - No se limpia  
+✅ **Integrado con Vercel** - Una sola plataforma  
+✅ **PostgreSQL Estándar** - Potente y confiable  
+✅ **Escalable Automáticamente**  
 
 ---
 
 ## ✅ Requisitos Previos
 
-Antes de comenzar, asegúrate de tener:
-
-- [ ] Cuenta en [PlanetScale](https://planetscale.com) (gratuita)
-- [ ] Cuenta en [Vercel](https://vercel.com) (gratuita)
+- [ ] Cuenta en [Vercel](https://vercel.com) (gratis)
 - [ ] GitHub repo actualizado
-- [ ] Node.js v18+ instalado localmente
+- [ ] Node.js v18+ instalado
 - [ ] Flutter SDK (para web build)
 - [ ] Git configurado
 
-### Variables de Entorno Necesarias
+---
+
+## FASE 1: Vercel Postgres {#fase-1-vercel-postgres}
+
+### Paso 1.1: Conectar Repo a Vercel
+
+```bash
+# 1. Ve a https://vercel.com/dashboard
+# 2. Click "New Project"
+# 3. Selecciona tu repo ConectaTIC
+# 4. Click "Import"
 ```
-JWT_SECRET           (mínimo 32 caracteres)
-DB_HOST             (PlanetScale host)
-DB_USER             (PlanetScale usuario)
-DB_PASSWORD         (PlanetScale contraseña)
-DB_NAME             (base de datos)
-ALLOWED_ORIGINS     (dominios permitidos)
+
+### Paso 1.2: Vercel Crea BD Automáticamente
+
+```
+1. En Vercel, abre tu proyecto
+2. Ve a "Storage" → "Databases"
+3. Click "Create Database"
+4. Selecciona "PostgreSQL"
+5. Acepta (Vercel lo configura todo automáticamente)
+```
+
+**¡Eso es todo!** Vercel crea la BD y agrega las variables automáticamente.
+
+### Paso 1.3: Verificar Conexión
+
+```bash
+# Las variables POSTGRES_URL* se crean automáticamente
+# En Vercel dashboard → Settings → Environment Variables
+# Verás:
+# - POSTGRES_URL
+# - POSTGRES_PRISMA_URL (opcional)
+# - POSTGRES_URL_NO_SSL (opcional)
 ```
 
 ---
 
-## FASE 1: PlanetScale MySQL
+## FASE 2: Vercel Backend {#fase-2-vercel-backend}
 
-### Paso 1.1: Crear Cuenta PlanetScale
+### Paso 2.1: Configurar Variables Adicionales
 
-1. Ve a https://planetscale.com
-2. Regístrate con GitHub o email
-3. Crea una nueva organización
-4. Crea base de datos: `conectatic`
+En Vercel dashboard → Settings → Environment Variables:
 
-### Paso 1.2: Obtener Connection String
+```
+Agrega:
+- NODE_ENV = production
+- JWT_SECRET = (generar: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+- ALLOWED_ORIGINS = https://conectatic.vercel.app,http://localhost:3000
+```
+
+Las variables de PostgreSQL se crean automáticamente ✅
+
+### Paso 2.2: Deploy Automático
 
 ```bash
-# En PlanetScale dashboard:
-1. Haz clic en "Databases" → "conectatic"
-2. Haz clic en "Connect"
-3. Selecciona "Node.js"
-4. Copia la connection string:
-   mysql://user:password@host.mysql.databases.cloud/database
+# Haz push a main
+git add .
+git commit -m "feat: Vercel Postgres integration"
+git push origin main
+
+# Vercel deployará automáticamente
 ```
 
-### Paso 1.3: Crear Tabla en PlanetScale
+### Paso 2.3: Test Backend
 
 ```bash
-# En PlanetScale dashboard:
-1. Ve a "SQL Editor"
-2. Ejecuta este SQL:
+# Tu API en:
+curl https://tu-proyecto.vercel.app/api
+# Respuesta: { "success": true, ... }
+
+# Ver logs
+vercel logs [nombre-proyecto]
 ```
 
-```sql
-CREATE TABLE IF NOT EXISTS usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  correo VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  progreso INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+---
 
-### Paso 1.4: Testear Localmente
+## FASE 3: Flutter Web {#fase-3-flutter-web}
+
+### Paso 3.1: Build Flutter Web
 
 ```bash
-# Copia .env.example a .env.local
-cd Backend
-cp .env.example .env.local
+cd frontend/conectatic_app
 
-# Edita .env.local con tus credenciales de PlanetScale
-# DB_HOST=your-host.mysql.databases.cloud
-# DB_USER=your_user
-# DB_PASSWORD=your_password
-# DB_NAME=conectatic
+# Habilitar web (primera vez)
+flutter config --enable-web
 
-# Instala dependencias
-npm install
+# Build optimizado
+flutter build web --release
 
-# Prueba conexión
-NODE_ENV=development npm run dev
-
-# Deberías ver:
-# ✅ Conexión a MySQL establecida correctamente
-# ✅ Tabla usuarios verificada/creada
+# Output en: build/web/
 ```
+
+### Paso 3.2: Actualizar API URL
+
+```dart
+// lib/core/constants.dart
+const String API_URL = 'https://tu-proyecto.vercel.app/api';
+```
+
+### Paso 3.3: Deploy Frontend
+
+```bash
+# Opción A: GitHub (automático)
+# En Vercel → New Project
+# Selecciona repo
+# Root Directory: frontend/conectatic_app
+# Build: flutter build web --release
+# Output: build/web
+
+# Opción B: CLI
+vercel --cwd frontend/conectatic_app
+```
+
+---
+
+## ✅ Verificación Post-Deployment
+
+### Backend
+
+```bash
+# Health check
+curl https://tu-proyecto.vercel.app/api
+
+# Crear usuario
+curl -X POST https://tu-proyecto.vercel.app/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Test",
+    "correo": "test@example.com",
+    "password": "Test123!@#"
+  }'
+
+# Ver logs
+vercel logs [proyecto] --tail
+```
+
+### Base de Datos
+
+```
+Vercel dashboard → Storage → Databases
+Ver datos en tiempo real
+```
+
+### Frontend
+
+```
+https://conectatic.vercel.app
+Prueba crear usuario desde la app
+```
+
+---
+
+## 🆘 Troubleshooting
+
+### Error: "Cannot connect to database"
+```
+1. Verifica que BD se creó en Vercel Storage
+2. Verifica que POSTGRES_URL existe en env vars
+3. Revisa logs: vercel logs [proyecto]
+```
+
+### Error: "CORS not allowed"
+```
+Vercel dashboard → Settings → Environment Variables
+Actualiza ALLOWED_ORIGINS
+```
+
+### Error: "JWT_SECRET undefined"
+```
+Vercel dashboard → Settings → Environment Variables
+Agrega JWT_SECRET
+```
+
+---
+
+## 🎉 ¡LISTO!
+
+**Todo 100% gratis con:**
+✅ Vercel (Frontend + Backend)
+✅ Vercel Postgres (Base de datos)
+✅ Flutter Web
+
+---
+
+**Última actualización:** 8 de Junio 2026
 
 ---
 

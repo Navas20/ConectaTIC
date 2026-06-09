@@ -62,9 +62,9 @@ Contraseña: MiPass123!
 
 **Stack:**
 - Framework: Express.js (Node.js)
-- Base de datos: MySQL (PlanetScale)
+- Base de datos: PostgreSQL (Vercel Postgres)
 - Autenticación: JWT (7 días)
-- Hosting: Vercel (Serverless)
+- Hosting: Vercel (100% Gratis)
 
 ---
 

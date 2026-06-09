@@ -11,20 +11,20 @@
 ### FASE 4: Corregir Errores del Código ✅
 - [x] Agregado `"type": "module"` en Root package.json
 - [x] Agregado `"type": "module"` en Backend package.json
-- [x] Instalado `mysql2` (reemplazó sqlite3)
+- [x] Instalado `@vercel/postgres` (reemplazó mysql2/sqlite3)
 - [x] Corregida indentación en `services/authService.js` (líneas 33-35)
 - [x] Corregida indentación en `services/authService.js` (líneas 80-94)
-- [x] Actualizado modelo Usuario para MySQL async/await
+- [x] Actualizado modelo Usuario para PostgreSQL con sql template strings
 - [x] Agregadas dependencias `pg`, `dotenv`, `qrcode` en root package.json
 - [x] Actualizado `.gitignore` para excluir .env, .env.local, .env.production
 
-### FASE 1: Backend para MySQL ✅
-- [x] Actualizado `config/db.js` para usar mysql2 pool
-- [x] Cambio de sqlite3 a MySQL connection strings
-- [x] Soporte para variables de entorno: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME
+### FASE 1: Backend para Vercel Postgres ✅
+- [x] Actualizado `config/db.js` para usar @vercel/postgres
+- [x] Cambio de sqlite3/mysql2 a PostgreSQL (Vercel Postgres)
+- [x] Soporte para Vercel environment variables automáticas
 - [x] Creado archivo `.env.example` con documentación
-- [x] Actualizado modelo `usuario.js` para promises de MySQL
-- [x] Creado script `init-planetscale.sh` para inicializar BD
+- [x] Actualizado modelo `usuario.js` para sql template strings
+- [x] **🟢 GRATIS:** Sin costo adicional, viene con Vercel
 
 ### FASE 2: Preparación Vercel ✅
 - [x] Creado `vercel.json` con configuración serverless
@@ -200,7 +200,7 @@ ConectaTIC/
 
 ## 🚀 PRÓXIMA FASE
 
-**FASE 1: PlanetScale Setup**
+### FASE 1: PlanetScale Setup**
 1. Crear cuenta en https://planetscale.com
 2. Crear base de datos "conectatic"
 3. Obtener connection string
@@ -210,8 +210,9 @@ ConectaTIC/
 **FASE 2: Vercel Deploy**
 1. Crear cuenta en https://vercel.com
 2. Conectar repo GitHub
-3. Configurar env variables
-4. Deploy automático
+3. Crear BD Postgres (automático)
+4. Configurar env variables
+5. Deploy automático
 
 **FASE 3: Flutter Web**
 1. Build web: `flutter build web --release`

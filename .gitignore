@@ -14,3 +14,7 @@ Thumbs.db
 .env
 .env.local
 .vercel
+
+# AI agent skills
+.agents/
+skills-lock.json

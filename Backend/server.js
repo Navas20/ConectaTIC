@@ -16,7 +16,7 @@ import dotenv from 'dotenv';
 import { initDb } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import usuariosRoutes from './routes/usuariosRoutes.js';
-import errorHandler from './middlewares/errorHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 // Cargar variables de entorno
 dotenv.config();

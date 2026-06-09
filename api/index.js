@@ -1,17 +1,15 @@
-let app;
-let dbReady = false;
-let dbError = null;
+let innerApp;
 
 try {
   const serverModule = await import('../Backend/server.js');
-  app = serverModule.default;
+  innerApp = serverModule.default;
   console.log('✅ Backend/server.js loaded successfully');
 } catch (err) {
   console.error('❌ Failed to load Backend/server.js:', err.message);
   console.error('Stack:', err.stack);
   const express = (await import('express')).default;
-  app = express();
-  app.get('*', (req, res) => {
+  innerApp = express();
+  innerApp.get('*', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Server initialization failed',
@@ -19,6 +17,9 @@ try {
     });
   });
 }
+
+let dbReady = false;
+let dbError = null;
 
 try {
   const { initDb } = await import('../Backend/config/db.js');
@@ -30,6 +31,9 @@ try {
   console.error('❌ DB init error:', err.message);
 }
 
+const express = (await import('express')).default;
+const app = express();
+
 app.use((req, res, next) => {
   if (!dbReady) {
     return res.status(503).json({
@@ -40,5 +44,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(innerApp);
 
 export default app;

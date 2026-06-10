@@ -111,109 +111,128 @@ class _VideoIntroScreenState extends State<VideoIntroScreen> {
   }
 
   Widget _buildBody(bool isWide) {
-    return Padding(
-      padding: EdgeInsets.all(isWide ? 32 : 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(isWide ? 32 : 24),
-            decoration: BoxDecoration(
-              color: const Color(0xFF2C2C2E),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Column(
-              children: [
-                if (_isInitialized) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: _controller != null && _controller!.value.isInitialized
-                          ? VideoPlayer(_controller!)
-                          : const CircularProgressIndicator(color: Color(0xFF58CC02)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenHeight = constraints.maxHeight;
+        final horizontalPadding = isWide ? 32.0 : 20.0;
+        final availableHeight = screenHeight - horizontalPadding * 2;
+        final buttonHeight = isWide ? 60.0 : 52.0;
+        final spacing = isWide ? 40.0 : 28.0;
+        final maxVideoHeight = availableHeight - buttonHeight - spacing;
+
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: availableHeight),
+            child: Padding(
+              padding: EdgeInsets.all(horizontalPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(isWide ? 32 : 24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2C2C2E),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Column(
+                      children: [
+                        if (_isInitialized) ...[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxHeight: maxVideoHeight),
+                              child: AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: _controller != null && _controller!.value.isInitialized
+                                    ? VideoPlayer(_controller!)
+                                    : const CircularProgressIndicator(color: Color(0xFF58CC02)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () => _controller!.seekTo(Duration.zero),
+                                icon: const Icon(Icons.replay, color: Colors.white70),
+                                tooltip: 'Reiniciar',
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  if (_controller!.value.isPlaying) {
+                                    _controller!.pause();
+                                  } else {
+                                    _controller!.play();
+                                  }
+                                  setState(() {});
+                                },
+                                icon: Icon(
+                                  _controller!.value.isPlaying ? Icons.pause_circle : Icons.play_circle,
+                                  color: const Color(0xFF58CC02),
+                                  size: 48,
+                                ),
+                                tooltip: _controller!.value.isPlaying ? 'Pausar' : 'Reproducir',
+                              ),
+                            ],
+                          ),
+                        ] else ...[
+                          Icon(
+                            _hasError ? Icons.school_rounded : Icons.play_circle_filled_rounded,
+                            color: const Color(0xFF58CC02),
+                            size: isWide ? 80 : 60,
+                          ),
+                          SizedBox(height: isWide ? 24 : 16),
+                          Text(
+                            _hasError ? 'Comenzar módulo' : 'Video introductorio',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isWide ? 22 : 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: isWide ? 12 : 8),
+                          Text(
+                            _hasError 
+                                ? 'Prepárate para aprender'
+                                : 'Mira el video para aprender más sobre este módulo',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: isWide ? 16 : 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () => _controller!.seekTo(Duration.zero),
-                        icon: const Icon(Icons.replay, color: Colors.white70),
-                        tooltip: 'Reiniciar',
+                  SizedBox(height: spacing),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/lesson-content', extra: {
+                        'titulo': widget.moduleTitle,
+                        'content': widget.content,
+                        'exercises': widget.exercises,
+                      }),
+                      icon: Icon(Icons.skip_next_rounded, size: isWide ? 28 : 24),
+                      label: Text(
+                        'Continuar a las lecciones',
+                        style: TextStyle(fontSize: isWide ? 18 : 16),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          if (_controller!.value.isPlaying) {
-                            _controller!.pause();
-                          } else {
-                            _controller!.play();
-                          }
-                          setState(() {});
-                        },
-                        icon: Icon(
-                          _controller!.value.isPlaying ? Icons.pause_circle : Icons.play_circle,
-                          color: const Color(0xFF58CC02),
-                          size: 48,
-                        ),
-                        tooltip: _controller!.value.isPlaying ? 'Pausar' : 'Reproducir',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF58CC02),
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: isWide ? 18 : 14),
                       ),
-                    ],
-                  ),
-                ] else ...[
-                  Icon(
-                    _hasError ? Icons.school_rounded : Icons.play_circle_filled_rounded,
-                    color: const Color(0xFF58CC02),
-                    size: isWide ? 80 : 60,
-                  ),
-                  SizedBox(height: isWide ? 24 : 16),
-                  Text(
-                    _hasError ? 'Comenzar módulo' : 'Video introductorio',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: isWide ? 22 : 18,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  SizedBox(height: isWide ? 12 : 8),
-                  Text(
-                    _hasError 
-                        ? 'Prepárate para aprender'
-                        : 'Mira el video para aprender más sobre este módulo',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: isWide ? 16 : 14,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
-              ],
-            ),
-          ),
-          SizedBox(height: isWide ? 40 : 28),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => context.push('/lesson-content', extra: {
-                'titulo': widget.moduleTitle,
-                'content': widget.content,
-                'exercises': widget.exercises,
-              }),
-              icon: Icon(Icons.skip_next_rounded, size: isWide ? 28 : 24),
-              label: Text(
-                'Continuar a las lecciones',
-                style: TextStyle(fontSize: isWide ? 18 : 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF58CC02),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: isWide ? 18 : 14),
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

@@ -13,8 +13,15 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "api/index.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/$1"
     }
   ],
   "env": {

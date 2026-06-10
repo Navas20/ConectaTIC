@@ -1,6 +1,6 @@
 # 🎯 ConectaTIC v2.0.0
 
-**Aplicación educativa para adultos mayores - Proyecto Gerencia de TI**
+**Aplicacion educativa para comunidades indigenas - Proyecto Gerencia de TI**
 
 **🚀 NUEVO: Ahora con MySQL (PlanetScale) + Vercel + Flutter Web**
 

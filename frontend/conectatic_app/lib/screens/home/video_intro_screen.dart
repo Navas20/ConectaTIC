@@ -142,7 +142,9 @@ class _VideoIntroScreenState extends State<VideoIntroScreen> {
                             child: ConstrainedBox(
                               constraints: BoxConstraints(maxHeight: maxVideoHeight),
                               child: AspectRatio(
-                                aspectRatio: 16 / 9,
+                                aspectRatio: _controller != null && _controller!.value.isInitialized
+                                    ? _controller!.value.size.aspectRatio
+                                    : 3 / 5,
                                 child: _controller != null && _controller!.value.isInitialized
                                     ? VideoPlayer(_controller!)
                                     : const CircularProgressIndicator(color: Color(0xFF58CC02)),

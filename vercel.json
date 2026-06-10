@@ -20,8 +20,24 @@
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
+      "src": "/assets/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/assets/$1"
+    },
+    {
+      "src": "/canvaskit/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/canvaskit/$1"
+    },
+    {
+      "src": "/icons/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/icons/$1"
+    },
+    {
+      "src": "/(.*\\.(js|json|html|css|png|ico|svg|woff|woff2|ttf|frag|wasm|map))",
       "dest": "/frontend/conectatic_app/build/web/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/index.html"
     }
   ],
   "env": {

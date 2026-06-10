@@ -1,4 +1,6 @@
-frontend/**
+frontend/*
+!frontend/conectatic_app/build/web
+!frontend/conectatic_app/vercel.json
 !.vercelignore
 node_modules
 .git

@@ -104,7 +104,7 @@ class MainMenuScreen extends StatelessWidget {
         'color': const Color(0xFF58CC02),
         'content': _celularContent,
         'exercises': _celularExercises,
-        'videoPath': 'assets/videos/modulo1.mp4',
+        'videoPath': '/videos/modulo1.mp4',
       },
       {
         'titulo': 'WhatsApp',
@@ -113,7 +113,7 @@ class MainMenuScreen extends StatelessWidget {
         'color': const Color(0xFF25D366),
         'content': _whatsappContent,
         'exercises': _whatsappExercises,
-        'videoPath': 'assets/videos/modulo2.mp4',
+        'videoPath': '/videos/modulo2.mp4',
       },
       {
         'titulo': 'Correo electrónico',

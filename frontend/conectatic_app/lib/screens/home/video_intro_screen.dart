@@ -59,7 +59,10 @@ class _VideoIntroScreenState extends State<VideoIntroScreen> {
   Future<void> _initializeVideo() async {
     if (widget.videoPath == null) return;
     try {
-      _controller = VideoPlayerController.asset(widget.videoPath!);
+      final videoUrl = widget.videoPath!.startsWith('http')
+          ? widget.videoPath!
+          : '${Uri.base.origin}${widget.videoPath!}';
+      _controller = VideoPlayerController.network(videoUrl);
       await _controller!.initialize();
       _controller!.addListener(_videoListener);
       setState(() => _isInitialized = true);

@@ -24,8 +24,8 @@
       "dest": "/frontend/conectatic_app/build/web/assets/$1"
     },
     {
-      "src": "/canvaskit/(.*)",
-      "dest": "/frontend/conectatic_app/build/web/canvaskit/$1"
+      "src": "/videos/(.*)",
+      "dest": "/frontend/conectatic_app/build/web/videos/$1"
     },
     {
       "src": "/icons/(.*)",

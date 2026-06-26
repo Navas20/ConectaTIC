@@ -8,8 +8,8 @@
       "dest": "/assets/$1"
     },
     {
-      "src": "/canvaskit/(.*)",
-      "dest": "/canvaskit/$1"
+      "src": "/videos/(.*)",
+      "dest": "/videos/$1"
     },
     {
       "src": "/icons/(.*)",

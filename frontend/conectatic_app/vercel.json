@@ -3,91 +3,44 @@
   "outputDirectory": "build/web",
   "devCommand": "flutter run -d chrome",
   "routes": [
-    {
-      "src": "^/videos/(.*)",
-      "dest": "/videos/$1",
-      "headers": {
-        "cache-control": "public, max-age=86400, must-revalidate"
-      }
-    },
-    {
-      "src": "^/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "^/icons/(.*)",
-      "dest": "/icons/$1"
-    },
-    {
-      "src": "^/.*\\.(js|json|html|css|png|ico|svg|woff2?|ttf|map)$",
-      "dest": "/$&"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "^/.*",
-      "dest": "/index.html"
-    }
+    { "handle": "filesystem" },
+    { "src": "^/(.*)", "dest": "/index.html" }
   ],
   "headers": [
     {
-      "source": "^/main\\.dart\\.js$",
+      "source": "/(.*)\\.(dart|js)(\\.map)?$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "^/flutter_bootstrap\\.js$",
+      "source": "/(.*)\\.wasm$",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "^/flutter_service_worker\\.js$",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "^/flutter\\.js$",
+      "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "^/assets/(.*)",
+      "source": "/icons/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "^/icons/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "^/favicon\\.png",
+      "source": "/videos/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]
     },
     {
-      "source": "^/manifest\\.json",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    },
-    {
-      "source": "^/index\\.html$",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "^/(.*)",
-      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]

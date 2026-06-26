@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": false,
   "outputDirectory": "build/web",
   "devCommand": "flutter run -d chrome",
   "routes": [

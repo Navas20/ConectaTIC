@@ -2,8 +2,9 @@
 node_modules/
 Backend/node_modules/
 
-# Build outputs
+# Build outputs (exclude all build dirs except Flutter web output)
 build/
+!frontend/conectatic_app/build/web/
 *.db
 
 # OS files

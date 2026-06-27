@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": false,
   "outputDirectory": "build/web",
   "routes": [
     { "handle": "filesystem" },

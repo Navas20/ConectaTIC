@@ -1,76 +1,23 @@
 {
   "version": 2,
+  "buildCommand": false,
   "outputDirectory": "build/web",
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
-  "overrides": [
+  "headers": [
     {
-      "path": "main.dart.js",
+      "source": "/main.dart.js",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "X-Custom-Test", "value": "works" }
       ]
     },
     {
-      "path": "flutter_bootstrap.js",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "path": "flutter_service_worker.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "path": "flutter.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "path": "assets/*",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "path": "icons/*",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "path": "videos/*",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    },
-    {
-      "path": "favicon.png",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    },
-    {
-      "path": "manifest.json",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    },
-    {
-      "path": "index.html",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "path": "/*",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     }
   ]
